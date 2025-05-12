@@ -192,13 +192,17 @@ This project uses [Poetry](https://python-poetry.org/) for dependency management
 
 ## TODO / Remaining Work
 
-*   **Crucial: Full API Documentation Alignment:** Verify all models, endpoint paths, parameters, and response structures against official Acunetix API documentation. This is the highest priority for ensuring correctness.
-*   **Comprehensive Unit and Integration Tests:** Expand test coverage significantly.
-*   **Refine Long-Running Operation Handling:** Verify terminal statuses for polling. Consider more sophisticated retry/backoff for polling API errors.
-*   **Detailed API-Specific Field Models:** Flesh out complex nested models like `ScanProfile.login_settings`, `ScanProfile.crawl_settings`, and other scan engine specific settings based on documentation.
+*   **Crucial: Full API Documentation Alignment:** Verify all models, endpoint paths, parameters, and response structures against official Acunetix API documentation.
+*   **Expand Unit & Integration Tests:** Increase coverage for edge-cases and error paths.
 *   **Webhook Support Investigation:** If Acunetix API supports webhooks for asynchronous events, consider adding utilities for their consumption.
 *   **Advanced Error Handling:** Map specific Acunetix error codes (if available beyond HTTP status) to more granular exceptions or include more detail in existing ones.
 *   **Full Documentation:** Complete all docstrings and generate API reference documentation.
+
+### ✓ Completed
+
+*   Long-running operation helpers (`wait_for_scan_completion`, `wait_for_report_completion`) implemented.
+*   Initial unit & integration tests in `tests/`.
+*   Detailed `ScanProfile` and related nested models fleshed out.
 
 ## Contributing
 
