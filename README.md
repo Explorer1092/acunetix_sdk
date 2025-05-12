@@ -198,12 +198,6 @@ This project uses [Poetry](https://python-poetry.org/) for dependency management
 *   **Advanced Error Handling:** Map specific Acunetix error codes (if available beyond HTTP status) to more granular exceptions or include more detail in existing ones.
 *   **Full Documentation:** Complete all docstrings and generate API reference documentation.
 
-### ✓ Completed
-
-*   Long-running operation helpers (`wait_for_scan_completion`, `wait_for_report_completion`) implemented.
-*   Initial unit & integration tests in `tests/`.
-*   Detailed `ScanProfile` and related nested models fleshed out.
-
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request or open an Issue.
