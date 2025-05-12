@@ -1,0 +1,1 @@
+# Mark tests/resources directory as a package 
