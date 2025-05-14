@@ -1,3 +1,6 @@
 vendors/
 .pytest_cache/
 .env
+
+# 忽略本地生成的 API 文档
+docs/api-reference.html

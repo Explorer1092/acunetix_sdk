@@ -16,6 +16,7 @@ A Python client for the Acunetix API, providing both synchronous and asynchronou
 *   Polling helpers in the async client for long-running operations like scan/report completion.
 *   Extensible HTTP client layer, allowing injection of custom pre-configured clients.
 *   Basic logging integration.
+*   **Command Line Interface** - 包含功能齐全的命令行工具，用于管理目标、扫描、报告和其他 Acunetix 资源。
 
 ## Installation
 
@@ -205,3 +206,10 @@ Contributions are welcome! Please feel free to submit a Pull Request or open an 
 ## License
 
 This SDK is distributed under the MIT License. See `LICENSE` for more information. 
+
+## 文档
+
+- [AWVS CLI 使用指南](docs/awvs_cli_usage.md) - 命令行工具详细使用方法
+- [API 参考文档](https://explorer1092.github.io/acunetix_sdk/api-reference.html) - 完整 API 参考 (在线)
+
+> **在线文档**: https://explorer1092.github.io/acunetix_sdk/ 

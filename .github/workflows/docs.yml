@@ -1,0 +1,91 @@
+name: Build & Deploy Docs
+
+on:
+  push:
+    branches: [main]            # 主分支变动触发
+    paths:
+      - 'docs/**'
+      - '.github/workflows/docs.yml'
+  workflow_dispatch:            # 允许手动触发
+
+permissions:
+  contents: write               # 需要推送 gh-pages 分支
+
+jobs:
+  build-docs:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0        # 推送 gh-pages 需要完整历史
+
+      - name: Setup Node (for redoc-cli)
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install documentation tools
+        run: |
+          npm install -g redoc-cli@latest
+          sudo apt-get update -y && sudo apt-get install -y pandoc
+
+      - name: Build static HTML docs
+        run: |
+          mkdir -p public
+          # 生成 API 参考
+          redoc-cli bundle docs/Acunetix-API-Documentation.yaml -o public/api-reference.html
+
+          # 生成 CLI 手册 HTML
+          pandoc docs/awvs_cli_usage.md -f markdown -t html5 -s \
+                 --metadata title="AWVS CLI 使用指南" \
+                 -c https://cdn.jsdelivr.net/npm/github-markdown-css/github-markdown.min.css \
+                 -o public/cli-usage.html
+
+          # 生成首页
+          cat > public/index.html << 'EOF'
+          <!DOCTYPE html>
+          <html lang="zh-CN">
+          <head>
+              <meta charset="UTF-8" />
+              <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+              <title>Acunetix Python SDK 文档</title>
+              <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css/github-markdown.min.css" />
+              <style>
+                body { background:#f6f8fa; margin:0; padding:2rem 0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif; }
+                .wrapper { max-width:900px; margin:0 auto; background:#fff; padding:2rem 3rem; border-radius:8px; }
+                h1 { margin-top:0; }
+                .card { border:1px solid #e1e4e8; border-radius:6px; padding:1.2rem 1.5rem; margin:1rem 0; }
+                .btn { display:inline-block; padding:0.4rem 0.8rem; background:#0969da; color:#fff; border-radius:4px; text-decoration:none; }
+              </style>
+          </head>
+          <body>
+            <div class="wrapper markdown-body">
+              <h1>Acunetix Python SDK 文档中心</h1>
+              <p>欢迎访问 <strong>Acunetix Python SDK</strong> 的在线文档。</p>
+              <h2>可用文档</h2>
+              <div class="card">
+                <h3>🔧 AWVS CLI 使用指南</h3>
+                <p>命令行工具详细使用方法，涵盖目标、扫描、报告等操作。</p>
+                <a class="btn" href="cli-usage.html">查看 CLI 指南</a>
+              </div>
+              <div class="card">
+                <h3>📘 API 参考文档</h3>
+                <p>基于官方 OpenAPI 规范生成的完整 API 端点参考。</p>
+                <a class="btn" href="api-reference.html">浏览 API 参考</a>
+              </div>
+              <hr />
+              <p>源代码仓库：<a href="https://github.com/Explorer1092/acunetix_sdk">Explorer1092/acunetix_sdk</a></p>
+            </div>
+          </body>
+          </html>
+          EOF
+
+      - name: Deploy to gh-pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./public
+          publish_branch: gh-pages
+          force_orphan: true      # 每次用干净历史
