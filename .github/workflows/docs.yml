@@ -52,13 +52,6 @@ jobs:
               <meta name="viewport" content="width=device-width, initial-scale=1.0" />
               <title>Acunetix Python SDK 文档</title>
               <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css/github-markdown.min.css" />
-              <style>
-                body { background:#f6f8fa; margin:0; padding:2rem 0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif; color: #24292f; }
-                .wrapper { max-width:900px; margin:0 auto; background:#fff; padding:2rem 3rem; border-radius:8px; }
-                h1 { margin-top:0; }
-                .card { border:1px solid #e1e4e8; border-radius:6px; padding:1.2rem 1.5rem; margin:1rem 0; }
-                .btn { display:inline-block; padding:0.4rem 0.8rem; background:#0969da; color:#fff; border-radius:4px; text-decoration:none; }
-              </style>
           </head>
           <body>
             <div class="wrapper markdown-body">
