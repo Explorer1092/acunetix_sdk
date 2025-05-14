@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Acunetix Python SDK 文档</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css/github-markdown.min.css" />
+    <style>
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+        line-height: 1.6;
+        color: #333;
+        background-color: #f6f8fa;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+      }
+      .container {
+        max-width: 800px;
+        width: 90%;
+        margin: 2rem auto;
+        padding: 2rem;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      }
+      h1, h2, h3 {
+        color: #24292e;
+        border-bottom: none; /* Override github-markdown.css */
+        padding-bottom: 0; /* Override github-markdown.css */
+      }
+      h1 {
+        font-size: 2.2em;
+        margin-bottom: 0.5em;
+        text-align: center;
+      }
+      h2 {
+        font-size: 1.6em;
+        margin-top: 1.5em;
+        margin-bottom: 0.8em;
+      }
+      p {
+        margin-bottom: 1em;
+        color: #586069;
+      }
+      .card-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1.5rem;
+        margin-top: 2rem;
+      }
+      .card {
+        background-color: #fff;
+        border: 1px solid #e1e4e8;
+        border-radius: 6px;
+        padding: 1.5rem;
+        transition: box-shadow 0.2s ease-in-out, transform 0.2s ease-in-out;
+        display: flex;
+        flex-direction: column;
+      }
+      .card:hover {
+        box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+        transform: translateY(-3px);
+      }
+      .card h3 {
+        font-size: 1.25em;
+        margin-top: 0;
+        margin-bottom: 0.5em;
+        color: #0366d6; /* GitHub link blue */
+      }
+      .card p {
+        font-size: 0.95em;
+        flex-grow: 1;
+        margin-bottom: 1rem;
+      }
+      .btn {
+        display: inline-block;
+        padding: 0.6em 1.2em;
+        background-color: #0366d6;
+        color: #fff;
+        text-decoration: none;
+        border-radius: 5px;
+        font-weight: 500;
+        text-align: center;
+        transition: background-color 0.2s ease-in-out;
+      }
+      .btn:hover {
+        background-color: #0056b3;
+        color: #fff; /* Ensure text color remains white on hover */
+      }
+      .footer {
+        text-align: center;
+        margin-top: 3rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid #e1e4e8;
+        font-size: 0.9em;
+        color: #6a737d;
+      }
+      .footer a {
+        color: #0366d6;
+        text-decoration: none;
+      }
+      .footer a:hover {
+        text-decoration: underline;
+      }
+      /* Ensuring markdown-body class from github-markdown.css doesn't conflict too much */
+      .markdown-body {
+        padding:0; /* Reset padding as container handles it */
+      }
+    </style>
+</head>
+<body>
+  <div class="container markdown-body">
+    <h1>Acunetix Python SDK 文档中心</h1>
+    <p style="text-align:center; font-size: 1.1em;">欢迎访问 <strong>Acunetix Python SDK</strong> 的在线文档。探索我们的资源以开始使用。</p>
+
+    <h2>可用文档</h2>
+    <div class="card-container">
+      <div class="card">
+        <h3>🔧 AWVS CLI 使用指南</h3>
+        <p>命令行工具详细使用方法，涵盖目标、扫描、报告等操作。</p>
+        <a class="btn" href="cli-usage.html">查看 CLI 指南</a>
+      </div>
+      <div class="card">
+        <h3>📘 API 参考文档</h3>
+        <p>基于官方 OpenAPI 规范生成的完整 API 端点参考。</p>
+        <a class="btn" href="api-reference.html">浏览 API 参考</a>
+      </div>
+    </div>
+
+    <div class="footer">
+      <p>源代码仓库：<a href="https://github.com/Explorer1092/acunetix_sdk" target="_blank" rel="noopener noreferrer">Explorer1092/acunetix_sdk</a></p>
+    </div>
+  </div>
+</body>
+</html>

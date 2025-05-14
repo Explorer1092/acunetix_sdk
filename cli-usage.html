@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>AWVS CLI 使用指南</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css/github-markdown.min.css" />
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">AWVS CLI 使用指南</h1>
+</header>
+<h1 id="acunetix-awvs-cli-main_cli.py-用法指南">Acunetix AWVS CLI
+(<code>main_cli.py</code>) 用法指南</h1>
+<p><code>main_cli.py</code> 是一个命令行工具，用于通过 Acunetix API
+与您的 Acunetix AWVS (Acunetix Web Vulnerability Scanner)
+实例进行交互。它允许您管理扫描目标、启动和管理扫描任务以及检索扫描结果。</p>
+<h2 id="目录">目录</h2>
+<ul>
+<li><a href="#acunetix-awvs-cli-main_clipy-用法指南">Acunetix AWVS CLI
+(<code>main_cli.py</code>) 用法指南</a>
+<ul>
+<li><a href="#目录">目录</a></li>
+<li><a href="#1-先决条件">1. 先决条件</a></li>
+<li><a href="#2-配置凭据">2. 配置凭据</a>
+<ul>
+<li><a href="#使用-login-命令-推荐">使用 <code>login</code> 命令
+(推荐)</a></li>
+<li><a href="#使用环境变量">使用环境变量</a></li>
+<li><a href="#配置加载顺序">配置加载顺序</a></li>
+<li><a href="#配置文件位置和安全">配置文件位置和安全</a></li>
+</ul></li>
+<li><a href="#3-通用用法">3. 通用用法</a></li>
+<li><a href="#4-模块和操作">4. 模块和操作</a>
+<ul>
+<li><a href="#登录配置-login">登录配置 (<code>login</code>)</a></li>
+<li><a href="#目标管理-targets">目标管理 (<code>targets</code>)</a>
+<ul>
+<li><a href="#列出目标-list">列出目标 (<code>list</code>)</a></li>
+<li><a href="#添加目标-add">添加目标 (<code>add</code>)</a></li>
+<li><a href="#删除目标-delete">删除目标 (<code>delete</code>)</a></li>
+</ul></li>
+<li><a href="#扫描管理-scans">扫描管理 (<code>scans</code>)</a>
+<ul>
+<li><a href="#启动扫描-start">启动扫描 (<code>start</code>)</a></li>
+<li><a href="#列出扫描-list">列出扫描 (<code>list</code>)</a></li>
+<li><a href="#获取扫描状态-status">获取扫描状态
+(<code>status</code>)</a></li>
+<li><a href="#获取扫描结果-results">获取扫描结果
+(<code>results</code>)</a></li>
+<li><a href="#中止扫描-stop">中止扫描 (<code>stop</code>)</a></li>
+<li><a href="#删除扫描-delete">删除扫描 (<code>delete</code>)</a></li>
+</ul></li>
+<li><a href="#扫描配置管理-scan_profiles">扫描配置管理
+(<code>scan_profiles</code>)</a>
+<ul>
+<li><a href="#列出扫描配置-list">列出扫描配置
+(<code>list</code>)</a></li>
+<li><a href="#获取扫描配置详情-get">获取扫描配置详情
+(<code>get</code>)</a></li>
+</ul></li>
+<li><a href="#目标组管理-target_groups">目标组管理
+(<code>target_groups</code>)</a>
+<ul>
+<li><a href="#列出目标组-list">列出目标组 (<code>list</code>)</a></li>
+<li><a href="#创建目标组-create">创建目标组
+(<code>create</code>)</a></li>
+<li><a href="#获取目标组详情-get">获取目标组详情
+(<code>get</code>)</a></li>
+<li><a href="#更新目标组-update">更新目标组
+(<code>update</code>)</a></li>
+<li><a href="#删除目标组-delete">删除目标组
+(<code>delete</code>)</a></li>
+</ul></li>
+<li><a href="#报告管理-reports">报告管理 (<code>reports</code>)</a>
+<ul>
+<li><a href="#列出报告-list">列出报告 (<code>list</code>)</a></li>
+<li><a href="#生成报告-generate">生成报告
+(<code>generate</code>)</a></li>
+<li><a href="#获取报告详情-get">获取报告详情 (<code>get</code>)</a></li>
+<li><a href="#删除报告-delete">删除报告 (<code>delete</code>)</a></li>
+</ul></li>
+<li><a href="#报告模板-report_templates">报告模板
+(<code>report_templates</code>)</a>
+<ul>
+<li><a href="#列出模板-list">列出模板 (<code>list</code>)</a></li>
+<li><a href="#获取模板详情-get">获取模板详情 (<code>get</code>)</a></li>
+</ul></li>
+<li><a href="#用户管理-users">用户管理 (<code>users</code>)</a>
+<ul>
+<li><a href="#列出用户-list">列出用户 (<code>list</code>)</a></li>
+<li><a href="#创建用户-create">创建用户 (<code>create</code>)</a></li>
+<li><a href="#获取用户详情-get">获取用户详情 (<code>get</code>)</a></li>
+<li><a href="#更新用户-update">更新用户 (<code>update</code>)</a></li>
+<li><a href="#删除用户-delete">删除用户 (<code>delete</code>)</a></li>
+</ul></li>
+<li><a href="#用户组管理-user_groups">用户组管理
+(<code>user_groups</code>)</a>
+<ul>
+<li><a href="#列出用户组-list">列出用户组 (<code>list</code>)</a></li>
+<li><a href="#创建用户组-create">创建用户组
+(<code>create</code>)</a></li>
+</ul></li>
+<li><a href="#角色管理-roles">角色管理 (<code>roles</code>)</a>
+<ul>
+<li><a href="#列出角色-list">列出角色 (<code>list</code>)</a></li>
+<li><a href="#创建角色-create">创建角色 (<code>create</code>)</a></li>
+</ul></li>
+<li><a href="#漏洞管理-vulnerabilities">漏洞管理
+(<code>vulnerabilities</code>)</a>
+<ul>
+<li><a href="#列出漏洞-list">列出漏洞 (<code>list</code>)</a></li>
+<li><a href="#获取漏洞详情-get">获取漏洞详情 (<code>get</code>)</a></li>
+<li><a href="#更新漏洞状态-update_status">更新漏洞状态
+(<code>update_status</code>)</a></li>
+</ul></li>
+<li><a href="#导出任务-exports">导出任务 (<code>exports</code>)</a>
+<ul>
+<li><a href="#列出导出类型-list_types">列出导出类型
+(<code>list_types</code>)</a></li>
+<li><a href="#创建导出-create">创建导出 (<code>create</code>)</a></li>
+</ul></li>
+<li><a href="#通知配置-notifications">通知配置
+(<code>notifications</code>)</a>
+<ul>
+<li><a href="#列出通知-list">列出通知 (<code>list</code>)</a></li>
+<li><a href="#创建通知-create">创建通知 (<code>create</code>)</a></li>
+</ul></li>
+<li><a href="#问题跟踪器-issue_trackers">问题跟踪器
+(<code>issue_trackers</code>)</a>
+<ul>
+<li><a href="#列出跟踪器-list">列出跟踪器 (<code>list</code>)</a></li>
+<li><a href="#创建跟踪器-create">创建跟踪器
+(<code>create</code>)</a></li>
+</ul></li>
+<li><a href="#waf-集成-wafs">WAF 集成 (<code>wafs</code>)</a>
+<ul>
+<li><a href="#列出-waf-list">列出 WAF (<code>list</code>)</a></li>
+<li><a href="#创建-waf-create">创建 WAF (<code>create</code>)</a></li>
+</ul></li>
+<li><a href="#排除时段-excluded_hours">排除时段
+(<code>excluded_hours</code>)</a>
+<ul>
+<li><a href="#列出排除时段-list">列出排除时段
+(<code>list</code>)</a></li>
+<li><a href="#创建排除时段-create">创建排除时段
+(<code>create</code>)</a></li>
+</ul></li>
+<li><a href="#代理配置-agents_config">代理配置
+(<code>agents_config</code>)</a>
+<ul>
+<li><a href="#获取代理配置-get">获取代理配置 (<code>get</code>)</a></li>
+<li><a href="#获取注册令牌-get_token">获取注册令牌
+(<code>get_token</code>)</a></li>
+</ul></li>
+<li><a href="#扫描代理-workers">扫描代理 (<code>workers</code>)</a>
+<ul>
+<li><a href="#列出扫描代理-list">列出扫描代理
+(<code>list</code>)</a></li>
+<li><a href="#授权扫描代理-authorize">授权扫描代理
+(<code>authorize</code>)</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#5-示例">5. 示例</a></li>
+<li><a href="#6-调试">6. 调试</a></li>
+</ul></li>
+</ul>
+<h2 id="先决条件">1. 先决条件</h2>
+<ul>
+<li>Python 3.x</li>
+<li>已安装 <code>acunetix_sdk</code> 包 (通常此脚本位于 SDK 的
+<code>examples/cli</code> 目录中，因此 SDK 应已可用)</li>
+<li>可以访问您的 Acunetix AWVS 实例 API。</li>
+</ul>
+<h2 id="配置凭据">2. 配置凭据</h2>
+<p>您可以通过以下任一方式配置 <code>main_cli.py</code> 连接到 Acunetix
+API 所需的凭据：</p>
+<h3 id="使用-login-命令-推荐">使用 <code>login</code> 命令 (推荐)</h3>
+<p>这是推荐的配置方式，它会将您的 API URL 和 API Key
+保存到一个本地配置文件中，供后续命令使用。</p>
+<p><strong>用法:</strong></p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> examples/cli/main_cli.py login <span class="at">--api_url</span> <span class="op">&lt;</span>API_URL<span class="op">&gt;</span> --api_key <span class="op">&lt;</span>API_KEY<span class="op">&gt;</span></span></code></pre></div>
+<ul>
+<li><code>&lt;API_URL&gt;</code>: 您的 Acunetix API 的完整 URL (例如,
+<code>https://your-acunetix-instance.com</code>)。</li>
+<li><code>&lt;API_KEY&gt;</code>: 您的 Acunetix API 密钥。</li>
+</ul>
+<p>如果不提供参数，系统将提示您输入这些值。执行此命令后，凭据将保存在配置文件中。</p>
+<h3 id="使用环境变量">使用环境变量</h3>
+<p>如果您不想使用配置文件，或者想临时覆盖配置文件中的设置，可以设置以下环境变量：</p>
+<ul>
+<li><code>AWVS_API_URL</code>: 您的 Acunetix API 的完整 URL。</li>
+<li><code>AWVS_API_KEY</code>: 您的 Acunetix API 密钥。</li>
+</ul>
+<p><strong>示例 (bash):</strong></p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">AWVS_API_URL</span><span class="op">=</span><span class="st">&quot;https://your-acunetix-instance.com&quot;</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">AWVS_API_KEY</span><span class="op">=</span><span class="st">&quot;your_api_key_here&quot;</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 然后运行脚本</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> examples/cli/main_cli.py targets list</span></code></pre></div>
+<h3 id="配置加载顺序">配置加载顺序</h3>
+<p>脚本将按以下顺序查找配置： 1. <strong>配置文件</strong>:
+如果存在且包含有效的 URL 和 Key。 2. <strong>环境变量</strong>:
+如果配置文件未找到或不完整，则尝试从 <code>AWVS_API_URL</code> 和
+<code>AWVS_API_KEY</code> 环境变量加载。</p>
+<p>如果两种方式都无法获取有效的配置，脚本将报错并退出。</p>
+<h3 id="配置文件位置和安全">配置文件位置和安全</h3>
+<ul>
+<li><strong>位置</strong>: 配置文件默认存储在用户主目录下的
+<code>~/.config/awvs_cli/config.json</code>。</li>
+<li><strong>安全</strong>: 请注意，API
+密钥以明文形式存储在配置文件中。请确保此文件的权限得到妥善管理
+(脚本会尝试将其设置为
+<code>600</code>，即仅用户可读写)，并避免在不安全的环境中共享此文件。</li>
+</ul>
+<h2 id="通用用法">3. 通用用法</h2>
+<p>脚本的基本调用结构如下：</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> examples/cli/main_cli.py <span class="pp">[</span><span class="ss">模块</span><span class="pp">]</span> <span class="pp">[</span><span class="ss">操作</span><span class="pp">]</span> <span class="pp">[</span><span class="ss">参数...</span><span class="pp">]</span> <span class="pp">[--</span><span class="ss">debug</span><span class="pp">]</span></span></code></pre></div>
+<p>您可以使用 <code>--help</code>
+选项查看通用帮助信息或特定模块/操作的帮助：</p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> examples/cli/main_cli.py <span class="at">--help</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> examples/cli/main_cli.py login <span class="at">--help</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> examples/cli/main_cli.py targets <span class="at">--help</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> examples/cli/main_cli.py targets add <span class="at">--help</span></span></code></pre></div>
+<h2 id="模块和操作">4. 模块和操作</h2>
+<h3 id="登录配置-login">登录配置 (<code>login</code>)</h3>
+<p>保存 Acunetix API URL 和 API Key
+到本地配置文件，以便后续命令使用，无需每次都设置环境变量。</p>
+<p><strong>用法:</strong></p>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> examples/cli/main_cli.py login <span class="at">--api_url</span> <span class="op">&lt;</span>API_URL<span class="op">&gt;</span> --api_key <span class="op">&lt;</span>API_KEY<span class="op">&gt;</span></span></code></pre></div>
+<ul>
+<li><code>--api_url &lt;API_URL&gt;</code> (可选): 您的 Acunetix API
+的完整 URL (例如
+<code>https://acunetix.example.com</code>)。如果不提供，将提示输入。</li>
+<li><code>--api_key &lt;API_KEY&gt;</code> (可选): 您的 Acunetix API
+密钥。如果不提供，将提示输入。</li>
+</ul>
+<p>执行后，凭据将保存到
+<code>~/.config/awvs_cli/config.json</code>。</p>
+<hr />
+<h3 id="目标管理-targets">目标管理 (<code>targets</code>)</h3>
+<p>此模块用于管理扫描目标。</p>
+<h4 id="列出目标-list">列出目标 (<code>list</code>)</h4>
+<p>列出所有已配置的目标。</p>
+<p><strong>用法:</strong></p>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> examples/cli/main_cli.py targets list [--limit <span class="op">&lt;</span>数量<span class="op">&gt;</span>]</span></code></pre></div>
+<ul>
+<li><code>--limit &lt;数量&gt;</code> (可选): 限制返回的目标数量。默认为
+100。</li>
+</ul>
+<h4 id="添加目标-add">添加目标 (<code>add</code>)</h4>
+<p>添加一个新的扫描目标。</p>
+<p><strong>用法:</strong></p>
+<div class="sourceCode" id="cb7"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> examples/cli/main_cli.py targets add <span class="op">&lt;</span>地址<span class="op">&gt;</span> <span class="op">&lt;</span>描述<span class="op">&gt;</span> [--criticality <span class="op">&lt;</span>重要性<span class="op">&gt;</span>]</span></code></pre></div>
+<ul>
+<li><code>&lt;地址&gt;</code> (必需): 目标地址 (例如
+<code>http://example.com</code>, <code>https://test.com</code>)。</li>
+<li><code>&lt;描述&gt;</code> (必需): 目标的描述性文本。</li>
+<li><code>--criticality &lt;重要性&gt;</code> (可选):
+目标的重要性级别，范围从 0 到 100，必须是 10 的倍数 (例如 10, 20, …,
+100)。默认为 10。</li>
+</ul>
+<h4 id="删除目标-delete">删除目标 (<code>delete</code>)</h4>
+<p>根据目标 ID 删除一个目标。</p>
+<p><strong>用法:</strong></p>
+<div class="sourceCode" id="cb8"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> examples/cli/main_cli.py targets delete <span class="op">&lt;</span>目标ID<span class="op">&gt;</span></span></code></pre></div>
+<ul>
+<li><code>&lt;目标ID&gt;</code> (必需): 要删除的目标的唯一标识符。</li>
+</ul>
+<hr />
+<h3 id="扫描管理-scans">扫描管理 (<code>scans</code>)</h3>
+<p>此模块用于管理扫描任务。</p>
+<h4 id="启动扫描-start">启动扫描 (<code>start</code>)</h4>
+<p>针对指定的目标启动一个新的扫描任务。</p>
+<p><strong>用法:</strong></p>
+<div class="sourceCode" id="cb9"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> examples/cli/main_cli.py scans start <span class="op">&lt;</span>目标ID<span class="op">&gt;</span> <span class="op">&lt;</span>扫描配置ID<span class="op">&gt;</span></span></code></pre></div>
+<ul>
+<li><code>&lt;目标ID&gt;</code> (必需): 要扫描的目标的唯一标识符。</li>
+<li><code>&lt;扫描配置ID&gt;</code> (必需):
+用于扫描的扫描配置文件的唯一标识符。</li>
+</ul>
+<p>CLI 会验证目标 ID 和扫描配置 ID 是否有效，然后启动扫描任务。</p>
+<h4 id="列出扫描-list">列出扫描 (<code>list</code>)</h4>
+<p>列出所有扫描任务。</p>
+<p><strong>用法:</strong></p>
+<div class="sourceCode" id="cb10"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> examples/cli/main_cli.py scans list [--limit <span class="op">&lt;</span>数量<span class="op">&gt;</span>]</span></code></pre></div>
+<ul>
+<li><code>--limit &lt;数量&gt;</code> (可选):
+限制返回的扫描任务数量。默认为 20。</li>
+</ul>
+<h4 id="获取扫描状态-status">获取扫描状态 (<code>status</code>)</h4>
+<p>获取特定扫描任务的当前状态和进度。</p>
+<p><strong>用法:</strong></p>
+<div class="sourceCode" id="cb11"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> examples/cli/main_cli.py scans status <span class="op">&lt;</span>扫描ID<span class="op">&gt;</span></span></code></pre></div>
+<ul>
+<li><code>&lt;扫描ID&gt;</code> (必需):
+要查询状态的扫描任务的唯一标识符。</li>
+</ul>
+<h4 id="获取扫描结果-results">获取扫描结果 (<code>results</code>)</h4>
+<p>获取特定扫描任务发现的漏洞列表。</p>
+<p><strong>用法:</strong></p>
+<div class="sourceCode" id="cb12"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> examples/cli/main_cli.py scans results <span class="op">&lt;</span>扫描ID<span class="op">&gt;</span> [--limit <span class="op">&lt;</span>数量<span class="op">&gt;</span>]</span></code></pre></div>
+<ul>
+<li><code>&lt;扫描ID&gt;</code> (必需):
+要获取结果的扫描任务的唯一标识符。</li>
+<li><code>--limit &lt;数量&gt;</code> (可选): 限制返回的漏洞数量。默认为
+100。</li>
+</ul>
+<h4 id="中止扫描-stop">中止扫描 (<code>stop</code>)</h4>
+<p>中止一个正在进行的扫描任务。</p>
+<p><strong>用法:</strong></p>
+<div class="sourceCode" id="cb13"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> examples/cli/main_cli.py scans stop <span class="op">&lt;</span>扫描ID<span class="op">&gt;</span></span></code></pre></div>
+<ul>
+<li><code>&lt;扫描ID&gt;</code> (必需):
+要中止的扫描任务的唯一标识符。</li>
+</ul>
+<h4 id="删除扫描-delete">删除扫描 (<code>delete</code>)</h4>
+<p>删除一个扫描任务的记录。</p>
+<p><strong>用法:</strong></p>
+<div class="sourceCode" id="cb14"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> examples/cli/main_cli.py scans delete <span class="op">&lt;</span>扫描ID<span class="op">&gt;</span></span></code></pre></div>
+<ul>
+<li><code>&lt;扫描ID&gt;</code> (必需):
+要删除的扫描任务的唯一标识符。</li>
+</ul>
+<h3 id="扫描配置管理-scan_profiles">扫描配置管理
+(<code>scan_profiles</code>)</h3>
+<p>此模块用于列出并查看可用的扫描配置文件。</p>
+<h4 id="列出扫描配置-list">列出扫描配置 (<code>list</code>)</h4>
+<p>列出所有扫描配置。</p>
+<p><strong>用法:</strong></p>
+<div class="sourceCode" id="cb15"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> examples/cli/main_cli.py scan_profiles list</span></code></pre></div>
+<h4 id="获取扫描配置详情-get">获取扫描配置详情 (<code>get</code>)</h4>
+<p>获取指定扫描配置 ID 的详细信息。</p>
+<p><strong>用法:</strong></p>
+<div class="sourceCode" id="cb16"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> examples/cli/main_cli.py scan_profiles get <span class="op">&lt;</span>扫描配置ID<span class="op">&gt;</span></span></code></pre></div>
+<hr />
+<h3 id="目标组管理-target_groups">目标组管理
+(<code>target_groups</code>)</h3>
+<p>此模块用于创建、更新及维护目标组。</p>
+<h4 id="列出目标组-list">列出目标组 (<code>list</code>)</h4>
+<div class="sourceCode" id="cb17"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> examples/cli/main_cli.py target_groups list [--limit <span class="op">&lt;</span>数量<span class="op">&gt;</span>]</span></code></pre></div>
+<h4 id="创建目标组-create">创建目标组 (<code>create</code>)</h4>
+<div class="sourceCode" id="cb18"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> examples/cli/main_cli.py target_groups create <span class="op">&lt;</span>名称<span class="op">&gt;</span> [--description <span class="op">&lt;</span>描述<span class="op">&gt;</span>]</span></code></pre></div>
+<h4 id="获取目标组详情-get">获取目标组详情 (<code>get</code>)</h4>
+<div class="sourceCode" id="cb19"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> examples/cli/main_cli.py target_groups get <span class="op">&lt;</span>目标组ID<span class="op">&gt;</span></span></code></pre></div>
+<h4 id="更新目标组-update">更新目标组 (<code>update</code>)</h4>
+<div class="sourceCode" id="cb20"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> examples/cli/main_cli.py target_groups update <span class="op">&lt;</span>目标组ID<span class="op">&gt;</span> [--name <span class="op">&lt;</span>新名称<span class="op">&gt;</span>] [--description <span class="op">&lt;</span>新描述<span class="op">&gt;</span>]</span></code></pre></div>
+<h4 id="删除目标组-delete">删除目标组 (<code>delete</code>)</h4>
+<div class="sourceCode" id="cb21"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> examples/cli/main_cli.py target_groups delete <span class="op">&lt;</span>目标组ID<span class="op">&gt;</span></span></code></pre></div>
+<hr />
+<h3 id="报告管理-reports">报告管理 (<code>reports</code>)</h3>
+<p>此模块用于生成并下载扫描报告。</p>
+<h4 id="列出报告-list">列出报告 (<code>list</code>)</h4>
+<div class="sourceCode" id="cb22"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> examples/cli/main_cli.py reports list [--limit <span class="op">&lt;</span>数量<span class="op">&gt;</span>]</span></code></pre></div>
+<h4 id="生成报告-generate">生成报告 (<code>generate</code>)</h4>
+<div class="sourceCode" id="cb23"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> examples/cli/main_cli.py reports generate <span class="op">&lt;</span>模板ID<span class="op">&gt;</span> <span class="op">&lt;</span>来源类型<span class="op">&gt;</span> <span class="op">&lt;</span>来源ID...<span class="op">&gt;</span></span></code></pre></div>
+<h4 id="获取报告详情-get">获取报告详情 (<code>get</code>)</h4>
+<div class="sourceCode" id="cb24"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> examples/cli/main_cli.py reports get <span class="op">&lt;</span>报告ID<span class="op">&gt;</span></span></code></pre></div>
+<h4 id="删除报告-delete">删除报告 (<code>delete</code>)</h4>
+<div class="sourceCode" id="cb25"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> examples/cli/main_cli.py reports delete <span class="op">&lt;</span>报告ID<span class="op">&gt;</span></span></code></pre></div>
+<hr />
+<h3 id="报告模板-report_templates">报告模板
+(<code>report_templates</code>)</h3>
+<p>仅支持查看模板信息。</p>
+<h4 id="列出模板-list">列出模板 (<code>list</code>)</h4>
+<div class="sourceCode" id="cb26"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> examples/cli/main_cli.py report_templates list</span></code></pre></div>
+<h4 id="获取模板详情-get">获取模板详情 (<code>get</code>)</h4>
+<div class="sourceCode" id="cb27"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> examples/cli/main_cli.py report_templates get <span class="op">&lt;</span>模板ID<span class="op">&gt;</span></span></code></pre></div>
+<hr />
+<h3 id="用户管理-users">用户管理 (<code>users</code>)</h3>
+<h4 id="列出用户-list">列出用户 (<code>list</code>)</h4>
+<div class="sourceCode" id="cb28"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> examples/cli/main_cli.py users list [--limit <span class="op">&lt;</span>数量<span class="op">&gt;</span>]</span></code></pre></div>
+<h4 id="创建用户-create">创建用户 (<code>create</code>)</h4>
+<div class="sourceCode" id="cb29"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> examples/cli/main_cli.py users create <span class="op">&lt;</span>邮箱<span class="op">&gt;</span> <span class="op">&lt;</span>名<span class="op">&gt;</span> <span class="op">&lt;</span>姓<span class="op">&gt;</span> <span class="op">&lt;</span>密码<span class="op">&gt;</span> <span class="pp">[--</span><span class="ss">send_invite_email</span><span class="pp">]</span></span></code></pre></div>
+<h4 id="获取用户详情-get">获取用户详情 (<code>get</code>)</h4>
+<div class="sourceCode" id="cb30"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> examples/cli/main_cli.py users get <span class="op">&lt;</span>用户ID<span class="op">&gt;</span></span></code></pre></div>
+<h4 id="更新用户-update">更新用户 (<code>update</code>)</h4>
+<div class="sourceCode" id="cb31"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> examples/cli/main_cli.py users update <span class="op">&lt;</span>用户ID<span class="op">&gt;</span> [--email <span class="op">&lt;</span>新邮箱<span class="op">&gt;</span>] ...</span></code></pre></div>
+<h4 id="删除用户-delete">删除用户 (<code>delete</code>)</h4>
+<div class="sourceCode" id="cb32"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> examples/cli/main_cli.py users delete <span class="op">&lt;</span>用户ID<span class="op">&gt;</span></span></code></pre></div>
+<hr />
+<h3 id="用户组管理-user_groups">用户组管理
+(<code>user_groups</code>)</h3>
+<h4 id="列出用户组-list">列出用户组 (<code>list</code>)</h4>
+<div class="sourceCode" id="cb33"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> examples/cli/main_cli.py user_groups list</span></code></pre></div>
+<h4 id="创建用户组-create">创建用户组 (<code>create</code>)</h4>
+<div class="sourceCode" id="cb34"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> examples/cli/main_cli.py user_groups create <span class="op">&lt;</span>名称<span class="op">&gt;</span></span></code></pre></div>
+<p>(更多操作请使用 <code>--help</code> 查看)</p>
+<hr />
+<h3 id="角色管理-roles">角色管理 (<code>roles</code>)</h3>
+<h4 id="列出角色-list">列出角色 (<code>list</code>)</h4>
+<div class="sourceCode" id="cb35"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> examples/cli/main_cli.py roles list</span></code></pre></div>
+<h4 id="创建角色-create">创建角色 (<code>create</code>)</h4>
+<div class="sourceCode" id="cb36"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> examples/cli/main_cli.py roles create <span class="op">&lt;</span>名称<span class="op">&gt;</span> --permissions <span class="op">&lt;</span>perm1,perm2<span class="op">&gt;</span></span></code></pre></div>
+<hr />
+<h3 id="漏洞管理-vulnerabilities">漏洞管理
+(<code>vulnerabilities</code>)</h3>
+<h4 id="列出漏洞-list">列出漏洞 (<code>list</code>)</h4>
+<div class="sourceCode" id="cb37"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> examples/cli/main_cli.py vulnerabilities list <span class="at">-q</span> <span class="st">&quot;severity:high&quot;</span></span></code></pre></div>
+<h4 id="获取漏洞详情-get">获取漏洞详情 (<code>get</code>)</h4>
+<div class="sourceCode" id="cb38"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> examples/cli/main_cli.py vulnerabilities get <span class="op">&lt;</span>漏洞ID<span class="op">&gt;</span></span></code></pre></div>
+<h4 id="更新漏洞状态-update_status">更新漏洞状态
+(<code>update_status</code>)</h4>
+<div class="sourceCode" id="cb39"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> examples/cli/main_cli.py vulnerabilities update_status <span class="op">&lt;</span>漏洞ID<span class="op">&gt;</span> fixed <span class="at">--comment</span> <span class="st">&quot;已修复&quot;</span></span></code></pre></div>
+<hr />
+<h3 id="导出任务-exports">导出任务 (<code>exports</code>)</h3>
+<h4 id="列出导出类型-list_types">列出导出类型
+(<code>list_types</code>)</h4>
+<div class="sourceCode" id="cb40"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> examples/cli/main_cli.py exports list_types</span></code></pre></div>
+<h4 id="创建导出-create">创建导出 (<code>create</code>)</h4>
+<div class="sourceCode" id="cb41"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> examples/cli/main_cli.py exports create <span class="op">&lt;</span>导出类型ID<span class="op">&gt;</span> vulnerabilities <span class="op">&lt;</span>漏洞ID<span class="op">&gt;</span></span></code></pre></div>
+<hr />
+<h3 id="通知配置-notifications">通知配置
+(<code>notifications</code>)</h3>
+<h4 id="列出通知-list">列出通知 (<code>list</code>)</h4>
+<div class="sourceCode" id="cb42"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> examples/cli/main_cli.py notifications list</span></code></pre></div>
+<h4 id="创建通知-create">创建通知 (<code>create</code>)</h4>
+<div class="sourceCode" id="cb43"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> examples/cli/main_cli.py notifications create <span class="st">&quot;扫描完成&quot;</span> scan_completed <span class="at">--scope_type</span> all <span class="at">--email_addresses</span> admin@example.com</span></code></pre></div>
+<hr />
+<h3 id="问题跟踪器-issue_trackers">问题跟踪器
+(<code>issue_trackers</code>)</h3>
+<h4 id="列出跟踪器-list">列出跟踪器 (<code>list</code>)</h4>
+<div class="sourceCode" id="cb44"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> examples/cli/main_cli.py issue_trackers list</span></code></pre></div>
+<h4 id="创建跟踪器-create">创建跟踪器 (<code>create</code>)</h4>
+<div class="sourceCode" id="cb45"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> examples/cli/main_cli.py issue_trackers create <span class="st">&quot;我的Jira&quot;</span> <span class="at">--config_file</span> jira.json</span></code></pre></div>
+<hr />
+<h3 id="waf-集成-wafs">WAF 集成 (<code>wafs</code>)</h3>
+<h4 id="列出-waf-list">列出 WAF (<code>list</code>)</h4>
+<div class="sourceCode" id="cb46"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> examples/cli/main_cli.py wafs list</span></code></pre></div>
+<h4 id="创建-waf-create">创建 WAF (<code>create</code>)</h4>
+<div class="sourceCode" id="cb47"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> examples/cli/main_cli.py wafs create <span class="st">&quot;我的WAF&quot;</span> <span class="at">--config_file</span> waf.json</span></code></pre></div>
+<hr />
+<h3 id="排除时段-excluded_hours">排除时段
+(<code>excluded_hours</code>)</h3>
+<h4 id="列出排除时段-list">列出排除时段 (<code>list</code>)</h4>
+<div class="sourceCode" id="cb48"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> examples/cli/main_cli.py excluded_hours list</span></code></pre></div>
+<h4 id="创建排除时段-create">创建排除时段 (<code>create</code>)</h4>
+<div class="sourceCode" id="cb49"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> examples/cli/main_cli.py excluded_hours create <span class="st">&quot;周末不扫&quot;</span> <span class="st">&#39;[true,false,...]&#39;</span></span></code></pre></div>
+<hr />
+<h3 id="代理配置-agents_config">代理配置
+(<code>agents_config</code>)</h3>
+<h4 id="获取代理配置-get">获取代理配置 (<code>get</code>)</h4>
+<div class="sourceCode" id="cb50"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> examples/cli/main_cli.py agents_config get</span></code></pre></div>
+<h4 id="获取注册令牌-get_token">获取注册令牌
+(<code>get_token</code>)</h4>
+<div class="sourceCode" id="cb51"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> examples/cli/main_cli.py agents_config get_token</span></code></pre></div>
+<hr />
+<h3 id="扫描代理-workers">扫描代理 (<code>workers</code>)</h3>
+<h4 id="列出扫描代理-list">列出扫描代理 (<code>list</code>)</h4>
+<div class="sourceCode" id="cb52"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> examples/cli/main_cli.py workers list</span></code></pre></div>
+<h4 id="授权扫描代理-authorize">授权扫描代理
+(<code>authorize</code>)</h4>
+<div class="sourceCode" id="cb53"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> examples/cli/main_cli.py workers authorize <span class="op">&lt;</span>WorkerID<span class="op">&gt;</span></span></code></pre></div>
+<p>更多子命令请使用 <code>--help</code> 查看。</p>
+<h2 id="示例">5. 示例</h2>
+<p><strong>1. 首次配置 API 凭据:</strong></p>
+<div class="sourceCode" id="cb54"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> examples/cli/main_cli.py login <span class="at">--api_url</span> https://my-awvs.example.com <span class="at">--api_key</span> yourSecretApiKeyHere</span></code></pre></div>
+<p><strong>2. 列出前 5 个目标 (使用已保存的凭据):</strong></p>
+<div class="sourceCode" id="cb55"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> examples/cli/main_cli.py targets list <span class="at">--limit</span> 5</span></code></pre></div>
+<p><strong>3. 添加一个新目标:</strong></p>
+<div class="sourceCode" id="cb56"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> examples/cli/main_cli.py targets add <span class="st">&quot;http://newtarget.com&quot;</span> <span class="st">&quot;这是一个新的测试目标&quot;</span> <span class="at">--criticality</span> 30</span></code></pre></div>
+<p><strong>4. 针对目标 ID
+<code>xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx</code> 使用扫描配置 ID
+<code>11111111-1111-1111-1111-111111111111</code> 启动扫描:</strong></p>
+<div class="sourceCode" id="cb57"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> examples/cli/main_cli.py scans start xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx 11111111-1111-1111-1111-111111111111</span></code></pre></div>
+<p><strong>5. 查看扫描 ID
+<code>yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy</code> 的状态:</strong></p>
+<div class="sourceCode" id="cb58"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> examples/cli/main_cli.py scans status yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy</span></code></pre></div>
+<p><strong>6. 获取扫描 ID
+<code>zzzzzzzz-zzzz-zzzz-zzzz-zzzzzzzzzzzz</code> 的前 10
+个漏洞:</strong></p>
+<div class="sourceCode" id="cb59"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> examples/cli/main_cli.py scans results zzzzzzzz-zzzz-zzzz-zzzz-zzzzzzzzzzzz <span class="at">--limit</span> 10</span></code></pre></div>
+<h2 id="调试">6. 调试</h2>
+<p>使用 <code>--debug</code>
+标志可以启用详细的日志输出，有助于排查连接或 API 调用问题：</p>
+<div class="sourceCode" id="cb60"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> examples/cli/main_cli.py <span class="at">--debug</span> targets list</span></code></pre></div>
+<p>调试模式将显示 SDK 和 CLI 的详细日志，包括 HTTP
+请求和响应的详细信息。</p>
+</body>
+</html>
